@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Iniciando sesión…</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <style>
+    html,body{height:100%;margin:0;display:flex;align-items:center;justify-content:center;
+      background:#0b1020;color:#c9d4ff;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    .caja{text-align:center;font-size:14px;line-height:1.7}
+    .aro{width:34px;height:34px;margin:0 auto 14px;border:3px solid #2a3564;border-top-color:#5a8bff;
+      border-radius:50%;animation:giro .9s linear infinite}
+    @keyframes giro{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="caja">
+    <div class="aro"></div>
+    Completando el inicio de sesión…<br>
+    <small id="msg" style="color:#7c88b8"></small>
+  </div>
+
+  <!--
+    PÁGINA DE RETORNO DEL OAUTH
+    ==========================================================================
+    Google y Facebook devuelven el resultado en el FRAGMENTO de la URL
+    (#id_token=...&state=...). El fragmento NUNCA viaja al servidor, así que el
+    token solo lo ve este navegador.
+
+    Esta página lo único que hace es reenviárselo a la ventana que abrió el
+    popup, y siempre a un origen EXACTO (window.location.origin), nunca a '*':
+    con '*' cualquier página que hubiera incrustado esta ventana podría leer el
+    token de identidad.
+
+    Colócala en la raíz pública de la app de login (login-sonmia/public/) para
+    que quede servida como https://tu-dominio/gf-oauth-callback.html — esa misma
+    URL es la que hay que registrar como "URI de redirección autorizada" en
+    Google y en Facebook.
+  -->
+  <script>
+    (function () {
+      'use strict';
+
+      function leerParams(texto) {
+        var out = {};
+        String(texto || '').replace(/^[#?]/, '').split('&').forEach(function (par) {
+          if (!par) return;
+          var i = par.indexOf('=');
+          var k = decodeURIComponent(i < 0 ? par : par.slice(0, i));
+          var v = i < 0 ? '' : decodeURIComponent(par.slice(i + 1).replace(/\+/g, ' '));
+          out[k] = v;
+        });
+        return out;
+      }
+
+      // El resultado puede venir en el fragmento (implícito) o en la query.
+      var datos = Object.assign(leerParams(location.search), leerParams(location.hash));
+
+      var mensaje = {
+        __gfWallet: 'oauth-result',
+        state: datos.state || '',
+        idToken: datos.id_token || null,
+        accessToken: datos.access_token || null,
+        code: datos.code || null,
+        error: datos.error || null,
+        errorDescription: datos.error_description || null
+      };
+
+      // Se borra el token de la barra de direcciones para que no quede en el
+      // historial del navegador.
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+
+      try {
+        if (window.opener) {
+          window.opener.postMessage(mensaje, window.location.origin);
+          document.getElementById('msg').textContent = 'Ya puedes cerrar esta ventana.';
+          setTimeout(function () { window.close(); }, 300);
+        } else {
+          document.getElementById('msg').textContent =
+            'Abre el inicio de sesión desde el juego, no directamente esta página.';
+        }
+      } catch (e) {
+        document.getElementById('msg').textContent = 'No se pudo devolver el resultado: ' + e.message;
+      }
+    })();
+  </script>
+</body>
+</html>

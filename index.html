@@ -5,8 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="./assets/logo192-BfPN9KHg.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign in to Grassland Forest</title>
-    <script type="module" crossorigin src="./assets/index-BG6DFLUq.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-B2EVem9g.css">
+
+    <!--
+      ethers v6 — lo usa el GF Wallet SDK para derivar la dirección de la wallet
+      embebida y firmar el mensaje de acceso. Es la MISMA versión que carga el
+      juego (bin/game.html), para que las firmas salgan idénticas en los dos
+      sitios. Va por CDN a propósito: así no hay que reinstalar dependencias en
+      esta app. En producción conviene descargar el fichero a /public y servirlo
+      desde tu propio dominio con subresource integrity.
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.10.0/ethers.umd.min.js" crossorigin="anonymous"></script>
+    <script type="module" crossorigin src="./assets/index-BdUZFH4X.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-npvYFrqr.css">
   </head>
   <body>
     <div id="root"></div>

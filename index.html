@@ -10,12 +10,11 @@
       ethers v6 — lo usa el GF Wallet SDK para derivar la dirección de la wallet
       embebida y firmar el mensaje de acceso. Es la MISMA versión que carga el
       juego (bin/game.html), para que las firmas salgan idénticas en los dos
-      sitios. Va por CDN a propósito: así no hay que reinstalar dependencias en
-      esta app. En producción conviene descargar el fichero a /public y servirlo
-      desde tu propio dominio con subresource integrity.
+      sitios. Se sirve desde este dominio con una versión fijada y verificación
+      de integridad.
     -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.10.0/ethers.umd.min.js" crossorigin="anonymous"></script>
-    <script type="module" crossorigin src="./assets/index-CsCadPzD.js"></script>
+    <script src="./vendor/ethers.umd.min.js" integrity="sha384-lApM4ELRuFNT7NgNqnXB2zFWgSDdhVvmnOHov2DPJz/2zuNpZImXBeklFr18ilvi" crossorigin="anonymous"></script>
+    <script type="module" crossorigin src="./assets/index-BWkyC_rk.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-npvYFrqr.css">
   </head>
   <body>
